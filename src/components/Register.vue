@@ -48,6 +48,7 @@
 
 <script>
     import { router } from '../route.js';
+    import ajax from "../ajax";
 
     export default {
         data () {
@@ -66,7 +67,7 @@
         },
         methods: {
             submit() {
-                this.$http.post("http://localhost:3000/users", this.user).then(() => {
+                ajax.post("users", this.user).then(() => {
                     router.push("/login");
                 }, error => {
                     console.log(error);

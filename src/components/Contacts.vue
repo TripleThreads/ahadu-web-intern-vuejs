@@ -56,7 +56,7 @@
                                 :src="'http://localhost:3000/uploads/' + contact.photo"
                                 class="white--text align-end"
                                 gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
-                                height="200px">
+                                height="200px" @click="contact_details(contact)">
 
                             <v-card-title v-text="contact.name" class="caption"></v-card-title>
                             <v-card-title v-text="contact.phone_number" class="body-2"></v-card-title>
@@ -107,7 +107,7 @@
                 ajax.delete("contacts/" + this.id)
                     .then(
                         () => {
-                            this.$store.dispatch("setContacts");
+                            store.dispatch("setContacts", store.getters.getUserId);
                         },
                         error => {
                             console.log(error);
@@ -127,12 +127,16 @@
                 ajax.put("contacts/" + contact.id, contact)
                     .then(
                         () => {
-                            this.$store.dispatch("setContacts");
+                            this.$store.dispatch("setContacts", store.getters.getUserId);
                         },
                         error => {
                             console.log(error);
                         }
                     )
+            },
+            contact_details(contact) {
+                store.dispatch("setContact", contact);
+                router.push('/contact/' + contact.id)
             }
         },
         computed: {

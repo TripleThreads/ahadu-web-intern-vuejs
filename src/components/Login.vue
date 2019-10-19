@@ -60,7 +60,7 @@
             submit() {
                 ajax.post("users/login", this.user)
                     .then(response => {
-                        store.dispatch("setApiToken", response.data.token);
+                        store.dispatch("setApiToken", response.data);
                         store.dispatch("resetMessage");
                         router.push("/");
                     }, () => {

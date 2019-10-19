@@ -7,6 +7,7 @@ Vue.use(Vuex);
 export const store = new Vuex.Store({
     state: {
         apiToken: "",
+        userId: "",
         stateMessage: "",
         contacts: [],
         contact: []
@@ -14,6 +15,9 @@ export const store = new Vuex.Store({
     getters: {
         getApiToken: state => {
             return state.apiToken;
+        },
+        getUserId: state => {
+            return state.userId;
         },
         isAuthenticated: state => {
             return !(state.apiToken === "");
@@ -31,6 +35,9 @@ export const store = new Vuex.Store({
     mutations: {
         setApiToken: (state, payload) => {
             state.apiToken = payload;
+        },
+        setUserId: (state, payload) => {
+            state.userId = payload;
         },
         setStateMessage: (state, payload) => {
             state.stateMessage = payload;
@@ -50,7 +57,8 @@ export const store = new Vuex.Store({
     },
     actions: {
         setApiToken: ({commit}, payload) => {
-            commit('setApiToken', payload);
+            commit('setApiToken', payload.token);
+            commit('setUserId', payload.id)
         },
         setStateMessage: ({commit}, payload) => {
             commit('setStateMessage', payload);
@@ -61,10 +69,8 @@ export const store = new Vuex.Store({
         resetApiToken: ({commit}) => {
             commit("resetApiToken");
         },
-        setContacts: ({commit}) => {
-
-            ajax.get("http://localhost:3000/contacts").then(response => {
-                console.log(response.data);
+        setContacts: ({commit}, payload) => {
+            ajax.get(`/users/${payload}/contacts`).then(response => {
                 commit("setContacts", response.data);
             }, error => {
                 console.log(error);

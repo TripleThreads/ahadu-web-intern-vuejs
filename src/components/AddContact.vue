@@ -40,7 +40,7 @@
 
             <input v-show="false" ref="inputUpload" type="file" @change="handleFileUpload">
             <div class="my-2 mx-auto align-center align-content-center">
-                <v-btn color="success" class="d-block mx-auto" @click="submit" dark v-text="button_name"> </v-btn>
+                <v-btn color="success" class="d-block mx-auto" @click="submit" dark v-text="button_name"></v-btn>
             </div>
         </form>
 
@@ -49,7 +49,7 @@
 
 <script>
     import ajax from "../ajax";
-    import { router } from "../route";
+    import {router} from "../route";
     import {store} from "../store/store";
 
     export default {
@@ -62,10 +62,7 @@
                     file: ''
                 },
                 button_text: "upload Image",
-                type: "success",
-                display_alert: this.$store.getters.getMessage.length > 0,
-                show_img: this.$store.getters.getContact.length !== 0,
-                button_name:  this.$router.currentRoute.path === "/add-contact" ? "Submit" : "Update"
+                type: "success"
             }
         },
         methods: {
@@ -77,7 +74,6 @@
                 formData.append('photo', this.contact.file);
                 formData.append('name', this.contact.name);
                 formData.append('phone_number', this.contact.phone_number);
-
                 let self = this;
 
                 if (this.$router.currentRoute.path === "/add-contact") {
@@ -89,6 +85,7 @@
                         self.showError();
                     });
                 } else {
+                    formData.append('is_favorite', store.getters.getContact.is_favorite);
                     ajax.patch('contacts/' + store.getters.getContact.id,
                         formData
                     ).then(() => {
@@ -112,6 +109,17 @@
             showError() {
                 this.type = "error";
                 store.dispatch("setStateMessage", "Something went wrong");
+            }
+        },
+        computed: {
+            display_alert() {
+                return store.getters.getMessage.length > 0
+            },
+            show_img() {
+                return store.getters.getContact.length !== 0
+            },
+            button_name() {
+                return this.$router.currentRoute.path === "/add-contact" ? "Submit" : "Update"
             }
         }
     }

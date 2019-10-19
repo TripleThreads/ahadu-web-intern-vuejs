@@ -13,13 +13,6 @@
 
             <v-spacer></v-spacer>
 
-            <router-link to="/favorites" tag="v-btn">
-                <v-btn icon>
-                    <v-icon>mdi-heart</v-icon>
-                </v-btn>
-
-            </router-link>
-
             <router-link to="/add-contact" tag="v-btn">
                 <v-btn icon>
                     <v-icon>mdi-account-multiple-plus</v-icon>

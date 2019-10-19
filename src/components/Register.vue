@@ -37,8 +37,8 @@
             ></v-text-field>
 
             <div class="my-2 mx-auto align-center align-content-center">
-                <router-link to="/login" class="mx-auto d-block text-center my-2 v-card--link">Login</router-link>
                 <v-btn color="success" class="d-block mx-auto" @click="submit()" dark> Register </v-btn>
+                <router-link to="/login" class="mx-auto d-block text-center my-2 v-card--link">Login</router-link>
             </div>
         </form>
 

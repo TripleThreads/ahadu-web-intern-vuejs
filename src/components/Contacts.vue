@@ -87,7 +87,7 @@
             <div class="text-center">
                 <v-pagination
                         v-model="page"
-                        :length="4"
+                        :length="getPageNumbers"
                         circle
                         @input="paginate"
                 ></v-pagination>
@@ -102,6 +102,8 @@
     import {router} from '../route';
     import {store} from "../store/store";
     import { isAuthorizationError } from "../auth";
+
+    import {CONTACTS_PER_PAGE} from "../store/store";
 
     export default {
         data: () => ({
@@ -164,7 +166,9 @@
 
                 return contacts.filter(c => c.name.toLowerCase().indexOf(search) > -1);
             },
-
+            getPageNumbers() { // showing contacts 4 contacts per page .. this function will calculate how many pages are needed
+                return Math.ceil(store.getters.getContactsCount / CONTACTS_PER_PAGE);
+            }
         }
     }
 </script>

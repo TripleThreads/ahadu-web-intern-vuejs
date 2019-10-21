@@ -1,8 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import ajax from "../ajax";
-import {router} from "../route";
-import { isAuthorizationError} from "../auth";
+import {isAuthorizationError} from "../auth";
 
 Vue.use(Vuex);
 
@@ -10,7 +9,7 @@ Vue.use(Vuex);
  * this file is our storage unit, it is vuex you know
  * */
 
-const CONTACTS_PER_PAGE = 4; // number of contacts per page for a pagination
+export const CONTACTS_PER_PAGE = 4; // number of contacts per page for a pagination
 
 export const store = new Vuex.Store({
     state: {
@@ -18,6 +17,7 @@ export const store = new Vuex.Store({
         userId: "",
         stateMessage: "",
         contacts: [],
+        contactsCount: 0,
         contact: []
     },
     getters: {
@@ -38,6 +38,9 @@ export const store = new Vuex.Store({
         },
         getContact: state => {
             return state.contact;
+        },
+        getContactsCount: state => {
+            return state.contactsCount;
         }
     },
     mutations: {
@@ -61,6 +64,9 @@ export const store = new Vuex.Store({
         },
         setContact: (state, payload) => {
             state.contact = payload;
+        },
+        setContactsCount: (state, payload) => {
+            state.contactsCount = payload;
         }
     },
     actions: {
@@ -82,8 +88,12 @@ export const store = new Vuex.Store({
             ajax.get(`/users/${userId}/contacts?filter[limit]=${CONTACTS_PER_PAGE}&filter[skip]=${paginate * CONTACTS_PER_PAGE}`)
                 .then(response => {
                     commit("setContacts", response.data);
+
+                    ajax.get('/contacts/count').then(response => {
+                        commit("setContactsCount", response.data.count);
+                    });
                 }, error => {
-                   isAuthorizationError(error);
+                    isAuthorizationError(error);
                 });
 
         },

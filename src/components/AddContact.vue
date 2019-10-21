@@ -104,6 +104,7 @@
     import ajax from "../ajax";
     import {router} from "../route";
     import {store} from "../store/store";
+    import { isAuthorizationError } from "../auth";
 
     export default {
         name: "AddContact",
@@ -146,8 +147,9 @@
                         formData,
                     ).then(function () {
                         self.showSuccess();
-                    }, () => {
+                    }, error => {
                         self.showError();
+                        isAuthorizationError(error);
                     });
                 } else {
                     formData.append('is_favorite', store.getters.getContact.is_favorite);
@@ -155,8 +157,9 @@
                         formData
                     ).then(() => {
                         router.push("/");
-                    }, () => {
+                    }, error => {
                         self.showError();
+                        isAuthorizationError(error);
                     });
                 }
             },
@@ -174,6 +177,7 @@
             showError() {
                 this.type = "error";
                 store.dispatch("setStateMessage", "Something went wrong");
+
             },
             is_create() {
                 return this.$router.currentRoute.path === "/add-contact";

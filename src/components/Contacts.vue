@@ -84,6 +84,14 @@
                     </v-card>
                 </v-col>
             </v-row>
+            <div class="text-center">
+                <v-pagination
+                        v-model="page"
+                        :length="4"
+                        circle
+                        @input="paginate"
+                ></v-pagination>
+            </div>
         </v-container>
     </v-card>
 </template>
@@ -93,13 +101,15 @@
     import ajax from "../ajax";
     import {router} from '../route';
     import {store} from "../store/store";
+    import { isAuthorizationError } from "../auth";
 
     export default {
         data: () => ({
             id: '',
             dialog: false,
             searchInput: '',
-            favorite_only: false
+            favorite_only: false,
+            page: 1
         }),
         methods: {
             deleteContact() {
@@ -110,7 +120,7 @@
                             store.dispatch("setContacts", store.getters.getUserId);
                         },
                         error => {
-                            console.log(error);
+                            isAuthorizationError(error);
                         }
                     )
             },
@@ -130,13 +140,16 @@
                             this.$store.dispatch("setContacts", store.getters.getUserId);
                         },
                         error => {
-                            console.log(error);
+                            isAuthorizationError(error);
                         }
                     )
             },
             contact_details(contact) {
                 store.dispatch("setContact", contact);
                 router.push('/contact/' + contact.id)
+            },
+            paginate(page) {
+                store.dispatch('setContacts', {"userId": store.getters.getUserId, "paginate": --page});
             }
         },
         computed: {

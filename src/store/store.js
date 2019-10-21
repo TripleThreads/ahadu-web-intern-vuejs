@@ -1,8 +1,16 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import ajax from "../ajax";
+import {router} from "../route";
+import { isAuthorizationError} from "../auth";
 
 Vue.use(Vuex);
+
+/**
+ * this file is our storage unit, it is vuex you know
+ * */
+
+const CONTACTS_PER_PAGE = 4; // number of contacts per page for a pagination
 
 export const store = new Vuex.Store({
     state: {
@@ -69,12 +77,14 @@ export const store = new Vuex.Store({
         resetApiToken: ({commit}) => {
             commit("resetApiToken");
         },
-        setContacts: ({commit}, payload) => {
-            ajax.get(`/users/${payload}/contacts`).then(response => {
-                commit("setContacts", response.data);
-            }, error => {
-                console.log(error);
-            });
+        setContacts: ({commit}, {userId, paginate}) => {
+
+            ajax.get(`/users/${userId}/contacts?filter[limit]=${CONTACTS_PER_PAGE}&filter[skip]=${paginate * CONTACTS_PER_PAGE}`)
+                .then(response => {
+                    commit("setContacts", response.data);
+                }, error => {
+                   isAuthorizationError(error);
+                });
 
         },
         setContact: ({commit}, payload) => {

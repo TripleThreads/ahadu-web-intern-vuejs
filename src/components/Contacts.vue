@@ -119,7 +119,8 @@
                 ajax.delete("contacts/" + this.id)
                     .then(
                         () => {
-                            store.dispatch("setContacts", store.getters.getUserId);
+                            let page = this.page;
+                            store.dispatch("setContacts", {"userId": store.getters.getUserId, "paginate": --page});
                         },
                         error => {
                             isAuthorizationError(error);
@@ -139,7 +140,8 @@
                 ajax.put("contacts/" + contact.id, contact)
                     .then(
                         () => {
-                            this.$store.dispatch("setContacts", store.getters.getUserId);
+                            let page = this.page;
+                            this.$store.dispatch("setContacts", {"userId": store.getters.getUserId, "paginate": --page});
                         },
                         error => {
                             isAuthorizationError(error);
@@ -151,6 +153,7 @@
                 router.push('/contact/' + contact.id)
             },
             paginate(page) {
+                this.page = page;
                 store.dispatch('setContacts', {"userId": store.getters.getUserId, "paginate": --page});
             }
         },

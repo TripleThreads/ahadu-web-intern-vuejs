@@ -39,6 +39,7 @@
     import {router} from '../route';
     import {store} from "../store/store"
     import ajax from "../ajax";
+    import {isAuthorizationError} from "../auth";
 
     export default {
         data() {
@@ -63,8 +64,9 @@
                         store.dispatch("setApiToken", response.data);
                         store.dispatch("resetMessage");
                         router.push("/");
-                    }, () => {
+                    }, error => {
                         store.dispatch("setStateMessage", "The email and password you entered don't match");
+                        isAuthorizationError(error);
                     });
             },
         },

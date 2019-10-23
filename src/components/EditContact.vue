@@ -11,7 +11,13 @@
 
         </v-toolbar>
 
-        <form class="my-4 mx-4" ref="form">
+        <v-img
+                :src="'http://localhost:3000/uploads/' + this.$store.getters.getContact.photo"
+                class="white--text align-end"
+                gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
+                height="200px"></v-img>
+
+        <form class="my-4 mx-4">
             <v-text-field
                     v-model="contact.name"
                     :rules="rules.name"
@@ -85,11 +91,12 @@
             </v-btn>
 
             <input type="file" accept="image/png, image/jpeg, image/bmp" v-show="false" ref="file"
-                   @change="handleFileUpload" :rules="rules.file"/>
+                   @change="handleFileUpload"/>
 
             <input v-show="false" ref="inputUpload" type="file" @change="handleFileUpload">
             <div class="my-2 mx-auto align-center align-content-center">
-                <v-btn :disabled="!formIsValid" color="success" class="d-block mx-auto" @click="submit"> Register</v-btn>
+                <v-btn :disabled="!formIsValid" color="success" class="d-block mx-auto" @click="submit"> Update
+                </v-btn>
             </div>
         </form>
 
@@ -98,20 +105,23 @@
 
 <script>
     import ajax from "../ajax";
+
+    import {router} from "../route";
     import {store} from "../store/store";
-    import {Contact, Rules} from "../models/contact";
+    import {Rules} from "../models/contact";
+
     import {isAuthorizationError} from "../auth";
 
     export default {
-        name: "AddContact",
+        name: "EditContact",
         data() {
             return {
-                button_text: "upload Image",
+                contact: store.getters.getContact,
+                rules: Rules,
+                button_text: "Upload Image",
                 type: "success",
                 menu: false,
                 modal: false,
-                contact: Contact,
-                rules: Rules
             }
         },
         methods: {
@@ -130,11 +140,11 @@
 
                 let self = this;
 
-                ajax.post(`users/${store.getters.getUserId}/contacts`,
-                    formData,
-                ).then(function () {
-                    self.showSuccess();
-                    self.$refs.form.reset();
+                formData.append('is_favorite', store.getters.getContact.is_favorite);
+                ajax.patch(`users/${store.getters.getUserId}/contacts`,
+                    formData
+                ).then(() => {
+                    router.push("/");
                 }, error => {
                     self.showError();
                     isAuthorizationError(error);
@@ -155,13 +165,14 @@
             showError() {
                 this.type = "error";
                 store.dispatch("setStateMessage", "Something went wrong");
+
             }
         },
         computed: {
             display_alert() {
                 return store.getters.getMessage.length > 0
             },
-            formIsValid () {
+            formIsValid() {
 
                 return (
                     this.contact.name &&
@@ -169,8 +180,7 @@
                     this.contact.city &&
                     this.contact.sub_city &&
                     this.contact.date_of_birth &&
-                    this.contact.house_number &&
-                    this.contact.file
+                    this.contact.house_number
                 )
             },
         },
@@ -178,7 +188,7 @@
             menu(val) {
                 val && setTimeout(() => (this.$refs.picker.activePicker = 'YEAR'))
             },
-        },
+        }
     }
 </script>
 

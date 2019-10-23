@@ -1,9 +1,5 @@
 <template class="mx-auto">
-    <v-card
-            class="mx-auto"
-            max-width="344"
-            outlined
-    >
+    <v-card class="mx-auto" max-width="344" outlined>
         <v-toolbar
                 color="blue darken-2"
                 dark
@@ -13,23 +9,27 @@
             <v-spacer></v-spacer>
 
         </v-toolbar>
-        <form class="mx-4 my-4">
+        <v-form class="mx-4 my-4" v-model="valid" lazy-validation ref="form">
             <v-text-field
                     v-model="user.username"
+                    :rules="rules.required"
                     label="Username"
                     required
             ></v-text-field>
             <v-text-field
                     :append-icon="!show1 ? 'mdi-eye-off' : 'mdi-eye'"
+                    :rules="rules.required"
                     v-model="user.password"
                     label="Password"
                     :type="show1 ? 'text' : 'password'"
                     required
+                    ref="password"
                     @click:append="show1 = !show1"
             ></v-text-field>
             <v-text-field
                     :append-icon="!show1 ? 'mdi-eye-off' : 'mdi-eye'"
-                    v-model="user.password"
+                    :rules="rules.match"
+                    v-model="user.confirm_password"
                     label="Confirm password"
                     :type="show1 ? 'text' : 'password'"
                     required
@@ -37,31 +37,32 @@
             ></v-text-field>
 
             <div class="my-2 mx-auto align-center align-content-center">
-                <v-btn color="success" class="d-block mx-auto" @click="submit()" dark> Register </v-btn>
+                <v-btn :disabled="!valid" color="success" class="d-block mx-auto" @click="submit"> Register
+                </v-btn>
                 <router-link to="/login" class="mx-auto d-block text-center my-2 v-card--link">Login</router-link>
             </div>
-        </form>
+        </v-form>
 
     </v-card>
 </template>
 
-
 <script>
-    import { router } from '../route.js';
+    import {router} from '../route';
     import ajax from "../ajax";
-
+    import {handleError} from "../auth";
     export default {
-        data () {
+        data() {
             return {
+                valid: false,
                 show1: false,
-                user : {
+                user: {
                     username: "segni",
                     password: 'Password',
+                    confirm_password: ''
                 },
                 rules: {
-                    required: value => !!value || 'Required.',
-                    min: v => v.length >= 8 || 'Min 8 characters',
-                    emailMatch: () => ('The email and password you entered don\'t match'),
+                    required: [val => (val || '').length > 0 || 'This field is required'],
+                    match: [v => v === this.$refs.password.$el.textContent || "Password doesn't match"]
                 }
             }
         },
@@ -70,10 +71,10 @@
                 ajax.post("users", this.user).then(() => {
                     router.push("/login");
                 }, error => {
-                    console.log(error);
+                    handleError(error);
                 });
             }
-        }
+        },
     }
 </script>
 

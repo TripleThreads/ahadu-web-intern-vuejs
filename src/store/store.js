@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import ajax from "../ajax";
-import {isAuthorizationError} from "../auth";
+import {handleError} from "../auth";
 
 Vue.use(Vuex);
 
@@ -93,7 +93,7 @@ export const store = new Vuex.Store({
                         commit("setContactsCount", response.data.count);
                     });
                 }, error => {
-                    isAuthorizationError(error);
+                    handleError(error);
                 });
 
         },

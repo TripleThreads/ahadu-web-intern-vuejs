@@ -17,7 +17,7 @@
                 gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
                 height="200px"></v-img>
 
-        <form class="my-4 mx-4">
+        <v-form class="my-4 mx-4" v-model="valid">
             <v-text-field
                     v-model="contact.name"
                     :rules="rules.name"
@@ -95,10 +95,10 @@
 
             <input v-show="false" ref="inputUpload" type="file" @change="handleFileUpload">
             <div class="my-2 mx-auto align-center align-content-center">
-                <v-btn :disabled="!formIsValid" color="success" class="d-block mx-auto" @click="submit"> Update
+                <v-btn :disabled="!valid" color="success" class="d-block mx-auto" @click="submit"> Update
                 </v-btn>
             </div>
-        </form>
+        </v-form>
 
     </v-card>
 </template>
@@ -110,12 +110,13 @@
     import {store} from "../store/store";
     import {Rules} from "../models/contact";
 
-    import {isAuthorizationError} from "../auth";
+    import {handleError} from "../auth";
 
     export default {
         name: "EditContact",
         data() {
             return {
+                valid: false,
                 contact: store.getters.getContact,
                 rules: Rules,
                 button_text: "Upload Image",
@@ -147,7 +148,7 @@
                     router.push("/");
                 }, error => {
                     self.showError();
-                    isAuthorizationError(error);
+                    handleError(error);
                 });
 
             },
@@ -171,17 +172,6 @@
         computed: {
             display_alert() {
                 return store.getters.getMessage.length > 0
-            },
-            formIsValid() {
-
-                return (
-                    this.contact.name &&
-                    this.contact.phone_number &&
-                    this.contact.city &&
-                    this.contact.sub_city &&
-                    this.contact.date_of_birth &&
-                    this.contact.house_number
-                )
             },
         },
         watch: {

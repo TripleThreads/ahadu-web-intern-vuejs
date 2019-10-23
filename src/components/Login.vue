@@ -11,13 +11,15 @@
             <v-spacer></v-spacer>
 
         </v-toolbar>
-        <form class="mx-4 my-4">
+        <v-form class="mx-4 my-4" v-model="valid">
             <v-text-field
+                    :rules="rules.required"
                     v-model="user.username"
                     label="Email"
                     required
             ></v-text-field>
             <v-text-field
+                    :rules="rules.required"
                     :append-icon="!show1 ? 'mdi-eye-off' : 'mdi-eye'"
                     v-model="user.password"
                     label="Password"
@@ -27,10 +29,10 @@
             ></v-text-field>
 
             <div class="my-2 mx-auto align-center align-content-center">
-                <v-btn color="success" class="d-block mx-auto" @click="submit" dark> Login</v-btn>
+                <v-btn :disabled="!valid" color="success" class="d-block mx-auto" @click="submit"> Login</v-btn>
                 <router-link to="/register" class="d-block mx-auto text-center my-2">Register</router-link>
             </div>
-        </form>
+        </v-form>
 
     </v-card>
 </template>
@@ -39,11 +41,13 @@
     import {router} from '../route';
     import {store} from "../store/store"
     import ajax from "../ajax";
-    import {isAuthorizationError} from "../auth";
+
+    import {handleError} from "../auth";
 
     export default {
         data() {
             return {
+                valid: false,
                 show1: false,
                 errorMsg: false,
                 user: {
@@ -51,9 +55,7 @@
                     password: 'string',
                 },
                 rules: {
-                    required: value => !!value || 'Required.',
-                    min: v => v.length >= 8 || 'Min 8 characters',
-                    emailMatch: () => ('The email and password you entered don\'t match'),
+                    required: [val => (val || '').length > 0 || 'This field is required'],
                 },
             }
         },
@@ -63,15 +65,15 @@
                     .then(response => {
                         store.dispatch("setApiToken", response.data);
                         store.dispatch("resetMessage");
-                        router.push("/");
+                        router.push("/"); // route to contacts list if the authentication is successful
                     }, error => {
                         store.dispatch("setStateMessage", "The email and password you entered don't match");
-                        isAuthorizationError(error);
+                        handleError(error);
                     });
             },
         },
         computed: {
-            show() {
+            show() { // show an alert message if only there is one
                 return store.getters.getMessage !== "";
             }
         }

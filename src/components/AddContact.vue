@@ -11,7 +11,7 @@
 
         </v-toolbar>
 
-        <form class="my-4 mx-4" ref="form">
+        <v-form class="my-4 mx-4" v-model="valid" ref="form">
             <v-text-field
                     v-model="contact.name"
                     :rules="rules.name"
@@ -87,11 +87,10 @@
             <input type="file" accept="image/png, image/jpeg, image/bmp" v-show="false" ref="file"
                    @change="handleFileUpload" :rules="rules.file"/>
 
-            <input v-show="false" ref="inputUpload" type="file" @change="handleFileUpload">
             <div class="my-2 mx-auto align-center align-content-center">
-                <v-btn :disabled="!formIsValid" color="success" class="d-block mx-auto" @click="submit"> Register</v-btn>
+                <v-btn :disabled="!valid" color="success" class="d-block mx-auto" @click="submit"> Register</v-btn>
             </div>
-        </form>
+        </v-form>
 
     </v-card>
 </template>
@@ -100,7 +99,7 @@
     import ajax from "../ajax";
     import {store} from "../store/store";
     import {Contact, Rules} from "../models/contact";
-    import {isAuthorizationError} from "../auth";
+    import {handleError} from "../auth";
 
     export default {
         name: "AddContact",
@@ -111,7 +110,8 @@
                 menu: false,
                 modal: false,
                 contact: Contact,
-                rules: Rules
+                rules: Rules,
+                valid: false
             }
         },
         methods: {
@@ -129,20 +129,23 @@
                 });
 
                 let self = this;
-
+                // submits our data to server and if its successful resets the form also show a success message
                 ajax.post(`users/${store.getters.getUserId}/contacts`,
                     formData,
                 ).then(function () {
                     self.showSuccess();
-                    self.$refs.form.reset();
+                    // clear contact object if we are navigating away from registration
+                    for (let member in Contact) delete Contact[member];
+                    self.$refs.form.resetValidation();
                 }, error => {
                     self.showError();
-                    isAuthorizationError(error);
+                    handleError(error);
                 });
 
             },
 
             handleFileUpload() {
+                // file upload handler
                 const filename = this.$refs.file.files[0].name;
                 this.contact.file = this.$refs.file.files[0];
                 this.button_text = filename.slice(0, 10);
@@ -158,24 +161,14 @@
             }
         },
         computed: {
+            // the following method only shows an alert if there is message to show
             display_alert() {
                 return store.getters.getMessage.length > 0
-            },
-            formIsValid () {
-
-                return (
-                    this.contact.name &&
-                    this.contact.phone_number &&
-                    this.contact.city &&
-                    this.contact.sub_city &&
-                    this.contact.date_of_birth &&
-                    this.contact.house_number &&
-                    this.contact.file
-                )
             },
         },
         watch: {
             menu(val) {
+                // for a date picker
                 val && setTimeout(() => (this.$refs.picker.activePicker = 'YEAR'))
             },
         },

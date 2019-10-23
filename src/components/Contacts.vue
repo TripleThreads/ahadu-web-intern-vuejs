@@ -101,7 +101,7 @@
     import ajax from "../ajax";
     import {router} from '../route';
     import {store} from "../store/store";
-    import { isAuthorizationError } from "../auth";
+    import { handleError } from "../auth";
 
     import {CONTACTS_PER_PAGE} from "../store/store";
 
@@ -123,7 +123,7 @@
                             store.dispatch("setContacts", {"userId": store.getters.getUserId, "paginate": --page});
                         },
                         error => {
-                            isAuthorizationError(error);
+                            handleError(error);
                         }
                     )
             },
@@ -144,7 +144,7 @@
                             this.$store.dispatch("setContacts", {"userId": store.getters.getUserId, "paginate": --page});
                         },
                         error => {
-                            isAuthorizationError(error);
+                            handleError(error);
                         }
                     )
             },

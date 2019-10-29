@@ -1,4 +1,6 @@
 import Vue from 'vue';
+import createPersistedState from 'vuex-persistedstate'
+
 import Vuex from 'vuex';
 import ajax from "../ajax";
 import {handleError} from "../auth";
@@ -12,6 +14,11 @@ Vue.use(Vuex);
 export const CONTACTS_PER_PAGE = 4; // number of contacts per page for a pagination
 
 export const store = new Vuex.Store({
+    plugins: [
+        createPersistedState({
+            paths: ['apiToken', 'userId'],
+        })
+    ],
     state: {
         apiToken: "",
         userId: "",

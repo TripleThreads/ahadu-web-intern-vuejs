@@ -1,9 +1,8 @@
 import Vue from 'vue';
-import createPersistedState from 'vuex-persistedstate'
-
 import Vuex from 'vuex';
-import ajax from "../ajax";
-import {handleError} from "../auth";
+
+import createPersistedState from 'vuex-persistedstate'
+import contact from "./contact"
 
 Vue.use(Vuex);
 
@@ -23,9 +22,6 @@ export const store = new Vuex.Store({
         apiToken: "",
         userId: "",
         stateMessage: "",
-        contacts: [],
-        contactsCount: 0,
-        contact: []
     },
     getters: {
         getApiToken: state => {
@@ -40,15 +36,6 @@ export const store = new Vuex.Store({
         getMessage: state => {
             return state.stateMessage;
         },
-        getContacts: state => {
-            return state.contacts;
-        },
-        getContact: state => {
-            return state.contact;
-        },
-        getContactsCount: state => {
-            return state.contactsCount;
-        }
     },
     mutations: {
         setApiToken: (state, payload) => {
@@ -66,15 +53,6 @@ export const store = new Vuex.Store({
         resetApiToken: (state) => {
             state.apiToken = "";
         },
-        setContacts: (state, payload) => {
-            state.contacts = payload;
-        },
-        setContact: (state, payload) => {
-            state.contact = payload;
-        },
-        setContactsCount: (state, payload) => {
-            state.contactsCount = payload;
-        }
     },
     actions: {
         setApiToken: ({commit}, payload) => {
@@ -90,22 +68,8 @@ export const store = new Vuex.Store({
         resetApiToken: ({commit}) => {
             commit("resetApiToken");
         },
-        setContacts: ({commit}, {userId, paginate}) => {
-
-            ajax.get(`/users/${userId}/contacts?filter[limit]=${CONTACTS_PER_PAGE}&filter[skip]=${paginate * CONTACTS_PER_PAGE}`)
-                .then(response => {
-                    commit("setContacts", response.data);
-
-                    ajax.get('/contacts/count').then(response => {
-                        commit("setContactsCount", response.data.count);
-                    });
-                }, error => {
-                    handleError(error);
-                });
-
-        },
-        setContact: ({commit}, payload) => {
-            commit("setContact", payload);
-        }
+    },
+    modules: {
+        contact
     }
 });

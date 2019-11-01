@@ -1,5 +1,9 @@
 <template class="mx-auto">
+
     <v-card class="mx-auto" max-width="344" outlined>
+        <v-alert dense text type="error" v-show="show" v-text="this.$store.getters.getMessage">
+        </v-alert>
+
         <v-toolbar
                 color="blue darken-2"
                 dark
@@ -9,7 +13,7 @@
             <v-spacer></v-spacer>
 
         </v-toolbar>
-        <v-form class="mx-4 my-4" v-model="valid" lazy-validation ref="form">
+        <v-form class="mx-4 my-4" v-model="valid" ref="form">
             <v-text-field
                     v-model="user.username"
                     :rules="rules.required"
@@ -50,6 +54,8 @@
     import {router} from '../route';
     import ajax from "../ajax";
     import {handleError} from "../auth";
+    import { store } from "../store/store";
+
     export default {
         data() {
             return {
@@ -62,7 +68,7 @@
                 },
                 rules: {
                     required: [val => (val || '').length > 0 || 'This field is required'],
-                    match: [v => v === this.$refs.password.$el.textContent || "Password doesn't match"]
+                    match: [v => (v === this.user.password && v.length > 0) || "Password doesn't match"]
                 }
             }
         },
@@ -75,6 +81,11 @@
                 });
             }
         },
+        computed: {
+            show() { // show an alert message if only there is one
+                return store.getters.getMessage !== "";
+            }
+        }
     }
 </script>
 

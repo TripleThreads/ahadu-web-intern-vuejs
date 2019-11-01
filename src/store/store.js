@@ -3,6 +3,7 @@ import Vuex from 'vuex';
 
 import createPersistedState from 'vuex-persistedstate'
 import contact from "./contact"
+import messages from "./messages";
 
 Vue.use(Vuex);
 
@@ -21,7 +22,6 @@ export const store = new Vuex.Store({
     state: {
         apiToken: "",
         userId: "",
-        stateMessage: "",
     },
     getters: {
         getApiToken: state => {
@@ -33,9 +33,6 @@ export const store = new Vuex.Store({
         isAuthenticated: state => {
             return !(state.apiToken === "");
         },
-        getMessage: state => {
-            return state.stateMessage;
-        },
     },
     mutations: {
         setApiToken: (state, payload) => {
@@ -43,12 +40,6 @@ export const store = new Vuex.Store({
         },
         setUserId: (state, payload) => {
             state.userId = payload;
-        },
-        setStateMessage: (state, payload) => {
-            state.stateMessage = payload;
-        },
-        resetMessage: (state) => {
-            state.stateMessage = "";
         },
         resetApiToken: (state) => {
             state.apiToken = "";
@@ -59,17 +50,12 @@ export const store = new Vuex.Store({
             commit('setApiToken', payload.token);
             commit('setUserId', payload.id)
         },
-        setStateMessage: ({commit}, payload) => {
-            commit('setStateMessage', payload);
-        },
-        resetMessage: ({commit}) => {
-            commit("resetMessage");
-        },
         resetApiToken: ({commit}) => {
             commit("resetApiToken");
         },
     },
     modules: {
-        contact
+        contact,
+        messages
     }
 });

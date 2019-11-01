@@ -18,7 +18,7 @@ export const router = new VueRouter({
         {path: '', component: Contacts, beforeEnter: ifAuthenticated},
         {path: '/add-contact', component: AddContact, beforeEnter: ifAuthenticated},
         {path: '/update/:name', component: EditContact, beforeEnter: ifAuthenticated},
-        {path: '/login', component: Login, beforeEnterAuthenticated: ifNotAuthenticated},
+        {path: '/login', component: Login, beforeEnter: ifNotAuthenticated},
         {path: '/register', component: Register, beforeEnter: ifNotAuthenticated},
         {path: '/contact/:id', component: ContactDetails, beforeEnter: ifAuthenticated},
     ]

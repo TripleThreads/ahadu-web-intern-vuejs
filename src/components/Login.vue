@@ -2,7 +2,7 @@
 
     <v-card class="mx-auto" max-width="344" outlined>
 
-        <v-alert dense outlined type="error" v-show="show" v-text="this.$store.getters.getMessage">
+        <v-alert dense text type="error" v-show="show" v-text="this.$store.getters.getMessage">
         </v-alert>
 
         <v-toolbar color="blue darken-2" dark>

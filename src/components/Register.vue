@@ -53,7 +53,7 @@
 <script>
     import {router} from '../route';
     import ajax from "../ajax";
-    import {handleError} from "../auth";
+    import {handleError} from "../error-handler";
     import { store } from "../store/store";
 
     export default {

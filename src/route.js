@@ -1,14 +1,14 @@
 import Vue from 'vue'
-
-import Contacts from "./components/Contacts";
-import AddContact from "./components/AddContact";
-import ContactDetails from "./components/ContactDetails";
 import VueRouter from 'vue-router';
-import Login from "./components/Login";
-import Register from "./components/Register";
-import EditContact from "./components/EditContact";
-
 import {ifAuthenticated, ifNotAuthenticated} from './auth';
+
+// lazy loading components
+const Contacts = () => import("./components/Contacts");
+const AddContact = () => import("./components/AddContact");
+const ContactDetails = () => import( "./components/ContactDetails");
+const Login = () => import("./components/Login");
+const Register = () => import("./components/Register");
+const EditContact = () => import("./components/EditContact");
 
 Vue.use(VueRouter);
 

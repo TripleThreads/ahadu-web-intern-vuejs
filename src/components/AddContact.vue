@@ -99,7 +99,7 @@
     import ajax from "../ajax";
     import {store} from "../store/store";
     import {Contact, Rules} from "../models/contact";
-    import {handleError} from "../auth";
+    import {handleError} from "../error-handler";
 
     export default {
         name: "AddContact",

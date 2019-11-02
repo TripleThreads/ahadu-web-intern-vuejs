@@ -100,10 +100,8 @@
 
     import ajax from "../ajax";
     import {router} from '../route';
-    import {store} from "../store/store";
-    import { handleError } from "../auth";
-
-    import {CONTACTS_PER_PAGE} from "../store/store";
+    import {CONTACTS_PER_PAGE, store} from "../store/store";
+    import {handleError} from "../error-handler";
 
     export default {
         data: () => ({
@@ -141,7 +139,10 @@
                     .then(
                         () => {
                             let page = this.page;
-                            this.$store.dispatch("setContacts", {"userId": store.getters.getUserId, "paginate": --page});
+                            this.$store.dispatch("setContacts", {
+                                "userId": store.getters.getUserId,
+                                "paginate": --page
+                            });
                         },
                         error => {
                             handleError(error);

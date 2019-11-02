@@ -42,7 +42,7 @@
     import {store} from "../store/store"
     import ajax from "../ajax";
 
-    import {handleError} from "../auth";
+    import {handleError} from "../error-handler";
 
     export default {
         data() {

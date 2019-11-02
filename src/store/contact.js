@@ -1,5 +1,5 @@
 import ajax from "../ajax";
-import {handleError} from "../auth";
+import {handleError} from "../error-handler";
 import {CONTACTS_PER_PAGE} from "./store";
 /**
  * this file is holds our contact data, split from store.js for modularity

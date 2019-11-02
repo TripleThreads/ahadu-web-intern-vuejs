@@ -110,7 +110,7 @@
     import {store} from "../store/store";
     import {Rules} from "../models/contact";
 
-    import {handleError} from "../auth";
+    import {handleError} from "../error-handler";
 
     export default {
         name: "EditContact",
